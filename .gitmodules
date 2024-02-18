@@ -1,0 +1,9 @@
+[submodule "src/foundations/strawberry-di"]
+	path = src/foundations/strawberry-di
+	url = https://github.com/strberry/di.git
+[submodule "src/foundations/strawberry-io"]
+	path = src/foundations/strawberry-io
+	url = https://github.com/strberry/io.git
+[submodule "src/foundations/strawberry-view"]
+	path = src/foundations/strawberry-view
+	url = https://github.com/strberry/view.git
