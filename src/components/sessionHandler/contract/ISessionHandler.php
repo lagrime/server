@@ -2,17 +2,19 @@
 
 interface ISessionHandler
 {
-    public function startChallenge($username, $randomString);
+    function startChallenge($username, $randomString): void;
 
-    public function getChallenge($username);
+    function getChallenge($username): string;
 
-    public function endChallenge($username);
+    function getChallengeOrNull($username): ?string;
 
-    public function setToken($username, $token);
+    function endChallenge($username): void;
 
-    public function tokenWasUsed($username);
+    function setToken($username, $token): void;
 
-    public function getUsernameFromToken($token);
+    function tokenWasUsed($username): void;
 
-    public function cleanupExpiredSessions();
+    function getUsernameFromToken($token): string;
+
+    function isTokenValid($username): bool;
 }
