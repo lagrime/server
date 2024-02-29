@@ -17,4 +17,6 @@ interface ISessionHandler
     function getUsernameFromToken($token): string;
 
     function isTokenValid($username): bool;
+
+    function destroyToken($username): bool;
 }

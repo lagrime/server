@@ -156,4 +156,19 @@ class RedisSessionHandler implements ISessionHandler
     {
         return "token:$username";
     }
+
+    /**
+     * @throws Exception
+     */
+    public function destroyToken($username): bool
+    {
+        $key = $this->getTokenKey($username);
+
+        if ($this->redis->exists($key)) {
+            $this->redis->del($key);
+            return true;
+        }
+
+        return false;
+    }
 }
