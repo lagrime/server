@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseFetcher implements IDatabaseFetcher
+class DatabaseFetcher implements IDatabaseAccessor
 {
     private PDO $db;
 
@@ -45,4 +45,18 @@ class DatabaseFetcher implements IDatabaseFetcher
         }
     }
 
+    function insertMessage(Message $message): void
+    {
+        // TODO: Implement insertMessage() method.
+    }
+
+    function getMessageById(int $message_id): Message
+    {
+        // TODO: Implement getMessageById() method.
+    }
+
+    function getMessageByIdOrNull(int $message_id): ?Message
+    {
+        // TODO: Implement getMessageByIdOrNull() method.
+    }
 }
