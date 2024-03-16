@@ -91,4 +91,28 @@ class DatabaseAccessor implements IDatabaseAccessor
         return $messages;
     }
 
+    /**
+     * @throws Exception
+     */
+    function getMessagesBySender(string $sender): array
+    {
+        $query = "SELECT * FROM message WHERE message_sender = :user_name";
+        $stmt = $this->db->prepare($query);
+        $user_name = htmlspecialchars(strip_tags($sender));
+        $stmt->bindParam(':user_name', $user_name);
+        $stmt->execute();
+
+        $messages = [];
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $messages[] = new Message(
+                $result['message_id'],
+                $result['message_raw'],
+                $result['message_receiver'],
+                $result['message_sender'],
+                $result['message_created_at']
+            );
+        }
+
+        return $messages;
+    }
 }
