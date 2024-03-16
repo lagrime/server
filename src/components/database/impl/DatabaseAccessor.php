@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseFetcher implements IDatabaseAccessor
+class DatabaseAccessor implements IDatabaseAccessor
 {
     private PDO $db;
 
@@ -36,6 +36,9 @@ class DatabaseFetcher implements IDatabaseAccessor
         return new User($result['user_name'], $result['user_public_key']);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getUserByNameOrNull(string $user_name): ?User
     {
         try {
@@ -45,18 +48,21 @@ class DatabaseFetcher implements IDatabaseAccessor
         }
     }
 
-    function insertMessage(Message $message): void
+    /**
+     * @throws Exception
+     */
+    public function insertMessage(Message $message): void
     {
-        // TODO: Implement insertMessage() method.
+        $query = "INSERT INTO your_message_table (message_raw, message_receiver, message_sender, message_created_at)
+                  VALUES (:message_raw, :message_receiver, :message_sender, :message_created_at)";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([
+            'message_raw' => $message->getMessageRaw(),
+            'message_receiver' => $message->getMessageReceiver(),
+            'message_sender' => $message->getMessageSender(),
+            'message_created_at' => $message->getMessageCreatedAt(),
+        ]);
     }
 
-    function getMessageById(int $message_id): Message
-    {
-        // TODO: Implement getMessageById() method.
-    }
-
-    function getMessageByIdOrNull(int $message_id): ?Message
-    {
-        // TODO: Implement getMessageByIdOrNull() method.
-    }
 }
