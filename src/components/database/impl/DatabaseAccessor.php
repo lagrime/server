@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseFetcher implements IDatabaseAccessor
+class DatabaseAccessor implements IDatabaseAccessor
 {
     private PDO $db;
 
@@ -36,6 +36,9 @@ class DatabaseFetcher implements IDatabaseAccessor
         return new User($result['user_name'], $result['user_public_key']);
     }
 
+    /**
+     * @throws Exception
+     */
     public function getUserByNameOrNull(string $user_name): ?User
     {
         try {
@@ -45,18 +48,71 @@ class DatabaseFetcher implements IDatabaseAccessor
         }
     }
 
-    function insertMessage(Message $message): void
+    /**
+     * @throws Exception
+     */
+    public function insertMessage(Message $message): void
     {
-        // TODO: Implement insertMessage() method.
+        $query = "INSERT INTO your_message_table (message_raw, message_receiver, message_sender, message_created_at)
+                  VALUES (:message_raw, :message_receiver, :message_sender, :message_created_at)";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([
+            'message_raw' => $message->getMessageRaw(),
+            'message_receiver' => $message->getMessageReceiver(),
+            'message_sender' => $message->getMessageSender(),
+            'message_created_at' => $message->getMessageCreatedAt(),
+        ]);
     }
 
-    function getMessageById(int $message_id): Message
+
+    /**
+     * @throws Exception
+     */
+    function getMessagesByReceiver(string $receiver): array
     {
-        // TODO: Implement getMessageById() method.
+        $query = "SELECT * FROM message WHERE message_receiver = :user_name";
+        $stmt = $this->db->prepare($query);
+        $user_name = htmlspecialchars(strip_tags($receiver));
+        $stmt->bindParam(':user_name', $user_name);
+        $stmt->execute();
+
+        $messages = [];
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $messages[] = new Message(
+                $result['message_id'],
+                $result['message_raw'],
+                $result['message_receiver'],
+                $result['message_sender'],
+                $result['message_created_at']
+            );
+        }
+
+        return $messages;
     }
 
-    function getMessageByIdOrNull(int $message_id): ?Message
+    /**
+     * @throws Exception
+     */
+    function getMessagesBySender(string $sender): array
     {
-        // TODO: Implement getMessageByIdOrNull() method.
+        $query = "SELECT * FROM message WHERE message_sender = :user_name";
+        $stmt = $this->db->prepare($query);
+        $user_name = htmlspecialchars(strip_tags($sender));
+        $stmt->bindParam(':user_name', $user_name);
+        $stmt->execute();
+
+        $messages = [];
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $messages[] = new Message(
+                $result['message_id'],
+                $result['message_raw'],
+                $result['message_receiver'],
+                $result['message_sender'],
+                $result['message_created_at']
+            );
+        }
+
+        return $messages;
     }
 }

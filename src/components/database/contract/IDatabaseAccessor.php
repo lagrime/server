@@ -8,7 +8,7 @@ interface IDatabaseAccessor
 
     function insertMessage(Message $message): void;
 
-    function getMessageById(int $message_id): Message;
+    function getMessagesByReceiver(string $receiver): array;
 
-    function getMessageByIdOrNull(int $message_id): ?Message;
+    function getMessagesBySender(string $sender): array;
 }
