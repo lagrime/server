@@ -1,9 +1,8 @@
 <?php
 
-class HelloController extends JsonController
+class AuthHelloController extends JsonController
 {
-
-    public function world(): string
+    public function index(): string
     {
         $kernel = KernelRepository::get();
         $request = $kernel->get(IRequest::class);
@@ -12,18 +11,18 @@ class HelloController extends JsonController
         if ($username == null) {
             return $this->respond([
                 "status" => "error",
-                "error_message" => "User not found",
-            ]);
+                "error_message" => "User parameter missing",
+            ], 400);
         }
 
-        $databaseFetcher = $kernel->get(IDatabaseFetcher::class);
-        $user = $databaseFetcher->getUserByNameOrNull($username);
+        $databaseAccessor = $kernel->get(IDatabaseAccessor::class);
+        $user = $databaseAccessor->getUserByNameOrNull($username);
 
         if ($user == null) {
             return $this->respond([
                 "status" => "error",
                 "error_message" => "User not found",
-            ]);
+            ], 400);
         }
 
         $randomString = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 16);
@@ -36,22 +35,24 @@ class HelloController extends JsonController
                 return $this->respond([
                     "status" => "error",
                     "error_message" => "Error while encrypting the challenge secret.",
-                ]);
+                ], 500);
             }
 
             $encrypted = base64_encode($encrypted);
-
             $sessionHandler = $kernel->get(ISessionHandler::class);
             $sessionHandler->startChallenge($user->getName(), $randomString);
 
             return $this->respond([
+                "status" => "success",
                 "encrypted_challenge" => $encrypted,
             ]);
-        } catch (SodiumException $e) {
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
+
             return $this->respond([
                 "status" => "error",
-                "error_message" => "Error while encrypting the challenge secret.",
-            ]);
+                "error_message" => "Error while managing your session.",
+            ], 500);
         }
     }
 }

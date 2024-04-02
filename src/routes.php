@@ -1,16 +1,14 @@
 <?php
 
 $routes = [
+    '/auth/hello' => [AuthHelloController::class, 'index'],
+    '/auth/complete' => [AuthCompleteController::class, 'index'],
 
-    '/' => [HelloController::class, 'world'],
-    '/hidden' => [HiddenController::class, 'index', [AuthMiddleware::class]],
+    '/get/public-key' => [GetPublicKeyController::class, 'index', [AuthMiddleware::class]],
+    '/message/send' => [MessageSendController::class, 'index', [AuthMiddleware::class]],
+    '/message/receive' => [MessageReceiveController::class, 'index', [AuthMiddleware::class]],
 
-    '/about' => function () {
-        echo 'About page!';
-    },
     '/error' => function () {
         return 'Could not find this page.';
     }
-
-
 ];
