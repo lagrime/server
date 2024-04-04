@@ -47,4 +47,15 @@ class DatabaseAccessor implements IDatabaseAccessor
             return null;
         }
     }
+
+    function setPublicKey(string $user_name, string $public_key): void
+    {
+        $query = "UPDATE user SET user_public_key = :public_key WHERE user_name = :user_name";
+        $stmt = $this->db->prepare($query);
+        $user_name = htmlspecialchars(strip_tags($user_name));
+        $public_key = htmlspecialchars(strip_tags($public_key));
+        $stmt->bindParam(':user_name', $user_name);
+        $stmt->bindParam(':user_public_key', $public_key);
+        $stmt->execute();
+    }
 }
