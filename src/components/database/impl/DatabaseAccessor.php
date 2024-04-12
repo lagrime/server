@@ -58,4 +58,15 @@ class DatabaseAccessor implements IDatabaseAccessor
         $stmt->bindParam(':user_public_key', $public_key);
         $stmt->execute();
     }
+
+    function createUser(string $user_name, string $public_key): void
+    {
+        $query = "INSERT INTO user (user_name, user_public_key) VALUES (:user_name, :public_key)";
+        $stmt = $this->db->prepare($query);
+        $user_name = htmlspecialchars(strip_tags($user_name));
+        $public_key = htmlspecialchars(strip_tags($public_key));
+        $stmt->bindParam(':user_name', $user_name);
+        $stmt->bindParam(':user_public_key', $public_key);
+        $stmt->execute();
+    }
 }

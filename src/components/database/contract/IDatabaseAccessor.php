@@ -7,4 +7,5 @@ interface IDatabaseAccessor
     function getUserByNameOrNull(string $user_name): ?User;
 
     function setPublicKey(string $user_name, string $public_key): void;
+    function createUser(string $user_name, string $public_key): void;
 }
