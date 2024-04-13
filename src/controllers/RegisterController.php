@@ -24,7 +24,7 @@ class RegisterController extends JsonController
                 "status" => "error",
                 "error_message" => "Please specify a user name",
             ], 400);
-        }4
+        }
 
         $databaseAccessor = $kernel->get(IDatabaseAccessor::class);
         $databaseAccessor->createUser($userName, $publicKey);
